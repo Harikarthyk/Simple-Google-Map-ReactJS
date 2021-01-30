@@ -1,8 +1,6 @@
 import React from "react";
 import {GoogleMap, LoadScript} from "@react-google-maps/api";
 import "./App.css";
-require("dotenv").config();
-/*  */
 
 const mapStyles = {
 	height: "100vh",
