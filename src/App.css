@@ -4,13 +4,13 @@
 }
 .App__input {
 	position: absolute;
-	top: 20px;
-	left: 25%;
-	right: 25%;
+	top: 70px;
+	left: 3%;
+	right: 3%;
 }
 
 input.location-search-input {
-	width: 95%;
+	width: -webkit-fill-available;
 	padding: 10px;
 	border-radius: 3px;
 	border: 1.9px solid grey;

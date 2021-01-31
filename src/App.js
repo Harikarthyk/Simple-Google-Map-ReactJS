@@ -96,6 +96,9 @@ class App extends React.Component {
 						mapContainerStyle={mapStyles}
 						zoom={16}
 						center={this.state.location}
+						onClick={({latLng}) => {
+							console.log(latLng.lat(), latLng.lng());
+						}}
 					>
 						<Marker
 							onClick={() => this.setState({...this.state, viewInfo: true})}
@@ -160,6 +163,8 @@ class App extends React.Component {
 							</div>
 						)}
 					</PlacesAutocomplete>
+
+					<div className='App__markers'></div>
 				</LoadScript>
 			</>
 		);
