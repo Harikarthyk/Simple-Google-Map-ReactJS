@@ -35,7 +35,7 @@ input.location-search-input {
 }
 .App__Address {
 	position: absolute;
-	bottom: 80px;
+	bottom: 60px;
 	background: white;
 	padding: 8px;
 	color: #8f8c8c;
