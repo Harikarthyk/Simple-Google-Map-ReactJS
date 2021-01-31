@@ -1,6 +1,7 @@
 * {
 	margin: 0px;
 	padding: 0px;
+	font-family: "Noto Sans TC", sans-serif;
 }
 .App__input {
 	position: absolute;
