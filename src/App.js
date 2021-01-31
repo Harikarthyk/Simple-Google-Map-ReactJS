@@ -34,6 +34,7 @@ class App extends React.Component {
 			address: "",
 			search: "",
 			viewInfo: false,
+			markers: [],
 		};
 	}
 	handleChange = (search) => {
@@ -50,6 +51,7 @@ class App extends React.Component {
 			})
 			.catch((error) => console.error("Error", error));
 	};
+
 	getAddress = () => {
 		Geocode.fromLatLng(this.state.location.lat, this.state.location.lng).then(
 			(response) => {
@@ -61,18 +63,21 @@ class App extends React.Component {
 			},
 		);
 	};
+
 	onMarkerDragEnd = (e) => {
 		const lat = e.latLng.lat();
 		const lng = e.latLng.lng();
 		this.setState({location: {lat, lng}, address: this.state.address});
 		this.getAddress();
 	};
+
 	componentDidMount() {
 		if (!navigator.geolocation) {
 			alert("Allow to track your loaction");
 			return;
 		}
-		navigator.geolocation.getCurrentPosition(
+
+		navigator.geolocation.watchPosition(
 			(position) => {
 				this.setState({
 					location: {
@@ -142,12 +147,15 @@ class App extends React.Component {
 									})}
 								/>
 								<div className='autocomplete-dropdown-container'>
-									{loading && <div>Loading...</div>}
+									{loading && (
+										<div style={{fontSize: "bold", textAlign: "center"}}>
+											Loading...
+										</div>
+									)}
 									{suggestions.map((suggestion, index) => {
 										const className = suggestion.active
 											? "suggestion-active"
 											: "suggestion-item";
-										// inline style for demonstration purpose
 										const style = suggestion.active
 											? {backgroundColor: "#fafafa", cursor: "pointer"}
 											: {backgroundColor: "#ffffff", cursor: "pointer"};
