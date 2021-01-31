@@ -14,7 +14,7 @@ import "./App.css";
 import Geocode from "react-geocode";
 
 const mapStyles = {
-	height: "80vh",
+	height: "100vh",
 	width: "100%",
 };
 
