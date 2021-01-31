@@ -18,7 +18,7 @@ const mapStyles = {
 	width: "100%",
 };
 
-Geocode.setApiKey("AIzaSyDejMEw7iAaAFt7QvmHDhiY1NpZK7R-MRw&");
+Geocode.setApiKey(`${YOUR_API_KEY}`);
 Geocode.setLanguage("en");
 Geocode.setRegion("in");
 Geocode.enableDebug();
@@ -109,7 +109,7 @@ class App extends React.Component {
 	render() {
 		return (
 			<>
-				<LoadScript googleMapsApiKey='AIzaSyDejMEw7iAaAFt7QvmHDhiY1NpZK7R-MRw&libraries=places'>
+				<LoadScript googleMapsApiKey=`${YOUR_API_KEY}&libraries=places`>
 					<GoogleMap
 						mapContainerStyle={mapStyles}
 						zoom={16}
