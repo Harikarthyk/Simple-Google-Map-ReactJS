@@ -28,8 +28,8 @@ class App extends React.Component {
 		super(props);
 		this.state = {
 			location: {
-				lat: 41.3851,
-				lng: 2.1734,
+				lat: 20.5937,
+				lng: 78.9629,
 			},
 			address: "",
 			search: "",
@@ -68,6 +68,10 @@ class App extends React.Component {
 		this.getAddress();
 	};
 	componentDidMount() {
+		if (!navigator.geolocation) {
+			alert("Allow to track your loaction");
+			return;
+		}
 		navigator.geolocation.getCurrentPosition(
 			(position) => {
 				this.setState({
