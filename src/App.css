@@ -32,3 +32,25 @@ input.location-search-input {
 .autocomplete-dropdown-container {
 	box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
 }
+.App__Address {
+	position: absolute;
+	bottom: 80px;
+	background: white;
+	padding: 8px;
+	color: #8f8c8c;
+	font-weight: bold;
+	border-radius: 3px;
+	left: 10%;
+	right: 10%;
+	box-shadow: rgb(0 0 0 / 30%) 0px 1px 4px -1px;
+}
+
+.App__copy {
+	font-size: 10px;
+	text-align: right;
+	font-style: oblique;
+	text-decoration: underline;
+	margin-right: 5px;
+	margin-top: 5px;
+	cursor: pointer;
+}

@@ -34,7 +34,8 @@ class App extends React.Component {
 			address: "",
 			search: "",
 			viewInfo: false,
-			markers: [],
+			copied: false,
+			// markers: [],
 		};
 	}
 	handleChange = (search) => {
@@ -56,7 +57,7 @@ class App extends React.Component {
 		Geocode.fromLatLng(this.state.location.lat, this.state.location.lng).then(
 			(response) => {
 				const address = response.results[0].formatted_address;
-				this.setState({...this.state, address: address});
+				this.setState({...this.state, address: address, copied: false});
 			},
 			(error) => {
 				console.error(error);
@@ -67,7 +68,7 @@ class App extends React.Component {
 	onMarkerDragEnd = (e) => {
 		const lat = e.latLng.lat();
 		const lng = e.latLng.lng();
-		this.setState({location: {lat, lng}, address: this.state.address});
+		this.setState({location: {lat, lng}, copied: false});
 		this.getAddress();
 	};
 
@@ -77,14 +78,22 @@ class App extends React.Component {
 			return;
 		}
 
-		navigator.geolocation.watchPosition(
+		navigator.geolocation.getCurrentPosition(
 			(position) => {
 				this.setState({
 					location: {
 						lat: position.coords.latitude,
 						lng: position.coords.longitude,
 					},
+					markers: [
+						{
+							text: "Current Location",
+							lat: position.coords.latitude,
+							lng: position.coords.longitude,
+						},
+					],
 				});
+
 				this.getAddress();
 			},
 			(error) => {
@@ -105,9 +114,23 @@ class App extends React.Component {
 						mapContainerStyle={mapStyles}
 						zoom={16}
 						center={this.state.location}
-						onClick={({latLng}) => {
-							console.log(latLng.lat(), latLng.lng());
-						}}
+						// onClick={({latLng}) => {
+						// 	Geocode.fromLatLng(latLng.lat(), latLng.lng()).then(
+						// 		(response) => {
+						// 			const address = response.results[0].formatted_address;
+						// 			this.setState({
+						// 				...this.state,
+						// 				markers: [
+						// 					...this.state.markers,
+						// 					{text: address, lat: latLng.lat(), lng: latLng.lng()},
+						// 				],
+						// 			});
+						// 		},
+						// 		(error) => {
+						// 			console.error(error);
+						// 		},
+						// 	);
+						// }}
 					>
 						<Marker
 							onClick={() => this.setState({...this.state, viewInfo: true})}
@@ -115,6 +138,18 @@ class App extends React.Component {
 							draggable={true}
 							onDragEnd={(e) => this.onMarkerDragEnd(e)}
 						/>
+						{/* {this.state.markers.map((mark, index) => {
+							// if (index)
+							return (
+								<Marker
+									key={index}
+									// onClick={() => this.setState({...this.state, viewInfo: true})}
+									position={{lat: mark.lat, lng: mark.lng}}
+									// draggable={true}
+									// onDragEnd={(e) => this.onMarkerDragEnd(e)}
+								/>
+							);
+						})} */}
 						{this.state.viewInfo ? (
 							<InfoWindow
 								position={this.state.location}
@@ -175,8 +210,20 @@ class App extends React.Component {
 							</div>
 						)}
 					</PlacesAutocomplete>
-
-					<div className='App__markers'></div>
+					<div className='App__Address'>
+						{this.state.address}
+						<div
+							className='App__copy'
+							onClick={() => {
+								navigator.clipboard.writeText(this.state.address);
+								this.setState({...this.state, copied: true});
+							}}
+						>
+							{this.state.copied
+								? "Address Copied to Clipboard"
+								: "click here to copy"}
+						</div>
+					</div>
 				</LoadScript>
 			</>
 		);
