@@ -211,7 +211,10 @@ class App extends React.Component {
 						)}
 					</PlacesAutocomplete>
 					<div className='App__Address'>
-						{this.state.address}
+						{this.state.address.length === 0
+							? "This Site request a location Access,Enable it to get your current Location"
+							: this.state.address}
+
 						<div
 							className='App__copy'
 							onClick={() => {
