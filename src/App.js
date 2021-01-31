@@ -1,5 +1,10 @@
 import React from "react";
-import {GoogleMap, LoadScript, Marker} from "@react-google-maps/api";
+import {
+	GoogleMap,
+	LoadScript,
+	Marker,
+	InfoWindow,
+} from "@react-google-maps/api";
 import PlacesAutocomplete, {
 	geocodeByAddress,
 	getLatLng,
@@ -27,22 +32,21 @@ class App extends React.Component {
 				lng: 2.1734,
 			},
 			address: "",
+			search: "",
+			viewInfo: false,
 		};
 	}
-	handleChange = (newAddress) => {
-		this.setState({location: this.state.location, address: newAddress});
+	handleChange = (search) => {
+		this.setState({location: this.state.location, search: search});
 	};
 
 	handleSelect = (newAddress) => {
-		this.setState({location: this.state.location, address: newAddress});
+		this.setState({location: this.state.location, search: newAddress});
 		geocodeByAddress(newAddress)
 			.then((results) => getLatLng(results[0]))
 			.then((latLng) => {
-				console.log("Success", latLng);
-
-				// this.setState({location: latLng, address: this.state.address});
-				// update center state
-				// this.setState({mapCenter: latLng});
+				this.setState({location: latLng, address: this.state.address});
+				this.getAddress();
 			})
 			.catch((error) => console.error("Error", error));
 	};
@@ -50,7 +54,7 @@ class App extends React.Component {
 		Geocode.fromLatLng(this.state.location.lat, this.state.location.lng).then(
 			(response) => {
 				const address = response.results[0].formatted_address;
-				console.log(address);
+				this.setState({...this.state, address: address});
 			},
 			(error) => {
 				console.error(error);
@@ -58,7 +62,6 @@ class App extends React.Component {
 		);
 	};
 	onMarkerDragEnd = (e) => {
-		console.log(e);
 		const lat = e.latLng.lat();
 		const lng = e.latLng.lng();
 		this.setState({location: {lat, lng}, address: this.state.address});
@@ -88,23 +91,33 @@ class App extends React.Component {
 	render() {
 		return (
 			<>
-				<LoadScript
-					// onLoad={this.handleScriptLoad}
-					googleMapsApiKey='AIzaSyDejMEw7iAaAFt7QvmHDhiY1NpZK7R-MRw&libraries=places'
-				>
+				<LoadScript googleMapsApiKey='AIzaSyDejMEw7iAaAFt7QvmHDhiY1NpZK7R-MRw&libraries=places'>
 					<GoogleMap
 						mapContainerStyle={mapStyles}
 						zoom={16}
 						center={this.state.location}
 					>
 						<Marker
+							onClick={() => this.setState({...this.state, viewInfo: true})}
 							position={this.state.location}
 							draggable={true}
 							onDragEnd={(e) => this.onMarkerDragEnd(e)}
 						/>
+						{this.state.viewInfo ? (
+							<InfoWindow
+								position={this.state.location}
+								onCloseClick={() =>
+									this.setState({...this.state, viewInfo: false})
+								}
+							>
+								<p>{this.state.address}</p>
+							</InfoWindow>
+						) : (
+							""
+						)}
 					</GoogleMap>
 					<PlacesAutocomplete
-						value={this.state.address}
+						value={this.state.search}
 						onChange={this.handleChange}
 						onSelect={this.handleSelect}
 					>
@@ -114,7 +127,7 @@ class App extends React.Component {
 							getSuggestionItemProps,
 							loading,
 						}) => (
-							<div>
+							<div className='App__input'>
 								<input
 									{...getInputProps({
 										placeholder: "Search Places ...",
@@ -122,10 +135,10 @@ class App extends React.Component {
 									})}
 								/>
 								<div className='autocomplete-dropdown-container'>
-									{/* {loading && <div>Loading...</div>} */}
-									{suggestions.map((suggestion) => {
+									{loading && <div>Loading...</div>}
+									{suggestions.map((suggestion, index) => {
 										const className = suggestion.active
-											? "sugg estion-item--active"
+											? "suggestion-active"
 											: "suggestion-item";
 										// inline style for demonstration purpose
 										const style = suggestion.active
@@ -133,6 +146,7 @@ class App extends React.Component {
 											: {backgroundColor: "#ffffff", cursor: "pointer"};
 										return (
 											<div
+												key={index}
 												{...getSuggestionItemProps(suggestion, {
 													className,
 													style,
@@ -147,7 +161,6 @@ class App extends React.Component {
 						)}
 					</PlacesAutocomplete>
 				</LoadScript>
-				{/* {console.log(this.state.location)} */}
 			</>
 		);
 	}
